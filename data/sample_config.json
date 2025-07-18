@@ -1,0 +1,9 @@
+{
+    "identifier": "did:plc:427uaandx74txvzakxthrjwu",
+    "name": "sample_label",
+    "description": "Description for a sample label",
+    "adultContentEnabled": false,
+    "labelSeverity": "Informational",
+    "contentType": "Media",
+    "behavior": "Ignore"
+}
