@@ -3,7 +3,7 @@ import streamlit as st
 from langchain_ollama import ChatOllama
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.messages import HumanMessage
-from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.memory import MemorySaver
 
 import traceback
 
@@ -16,6 +16,7 @@ st.set_page_config(
     layout='wide',
     initial_sidebar_state='auto'
 )
+
 
 def extract_model_names(models_info: list) -> tuple:
     return tuple(model['model'] for model in models_info['models'])
@@ -31,6 +32,9 @@ def main():
     # Select downloaded models from ollama
     models_info = ollama.list()
     available_models = extract_model_names(models_info)
+
+    # Instatiate agent checkpointer
+    memory = MemorySaver()
 
     if available_models:
         selected_model = st.selectbox('Pick a model available locally on your system ↓', available_models)
@@ -62,21 +66,20 @@ def main():
                 model = ChatOllama(model=selected_model)
                 
                 # Calling agent with base config generation prompt
-                with SqliteSaver.from_conn_string(':memory:') as memory:
-                    bot = Agent(model=model, tools=[search_tool], system=config_generation_prompt, checkpointer=memory)
-                    messages = [HumanMessage(content=prompt)]
-                    thread = {"configurable": {"thread_id": "1"}}
+                bot = Agent(model=model, tools=[search_tool], system=config_generation_prompt, checkpointer=memory)
+                messages = [HumanMessage(content=prompt)]
+                thread = {"configurable": {"thread_id": "1"}}
 
-                    def generate_stream():
-                        full_response = ''
-                        for event in bot.workflow.stream({"messages": messages}, thread):
-                            print(bot.__getstate__())
-                            for v in event.values():
-                                full_response += v['messages'][-1].content
-                                yield v['messages'][-1].content
-                        st.session_state.messages.append({'role': 'assistant', 'content': full_response})
-                    
-                    st.write_stream(generate_stream)
+                def generate_stream():
+                    full_response = ''
+                    for event in bot.workflow.stream({"messages": messages}, thread):
+                        for v in event.values():
+                            full_response += v['messages'][-1].content
+                            yield v['messages'][-1].content
+                    st.session_state.messages.append({'role': 'assistant', 'content': full_response})
+                
+                st.write_stream(generate_stream)
+                print(bot.workflow.get_state(config=thread))
                     
         except Exception as e:
             st.error(e, icon='❌')
