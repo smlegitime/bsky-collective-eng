@@ -1,5 +1,7 @@
-import ollama
+import asyncio
+import time
 import streamlit as st
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_ollama import ChatOllama
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.messages import HumanMessage
@@ -7,8 +9,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 import traceback
 
-from agent import Agent
-from data.prompts import basic_search_prompt, config_generation_prompt
+from retrieval_agent import RetrievalAgent
 
 st.set_page_config(
     page_title='Bluesky Labeler Creator Prototype',
@@ -18,8 +19,14 @@ st.set_page_config(
 )
 
 
-def extract_model_names(models_info: list) -> tuple:
-    return tuple(model['model'] for model in models_info['models'])
+def stream_agent_response(agent, user_input, thread_config):
+    input_data = [HumanMessage(content=user_input)]
+    for chunk in agent.workflow.stream(
+        {'messages': input_data}, thread_config
+    ):
+        for v in chunk.values():
+            yield v['messages'][-1].content + ' '
+            time.sleep(0.05) 
 
 def main():
     st.write(
@@ -28,18 +35,6 @@ def main():
     )
 
     st.subheader('Single-User Prototype', divider='violet', anchor=False)
-
-    # Select downloaded models from ollama
-    models_info = ollama.list()
-    available_models = extract_model_names(models_info)
-
-    # Instatiate agent checkpointer
-    memory = MemorySaver()
-
-    if available_models:
-        selected_model = st.selectbox('Pick a model available locally on your system ↓', available_models)
-    else:
-        st.warning("You have not pulled any model from Ollama yet!", icon="⚠️")
 
     # Setting up messages
     message_container = st.container(height=500, border=True)
@@ -52,9 +47,6 @@ def main():
         with message_container.chat_message(message['role'], avatar=avatar):
             st.markdown(message['content'])
 
-    # Initialize search tool
-    search_tool = DuckDuckGoSearchRun(name='Search')
-
     # Processing messages
     if prompt := st.chat_input('Enter a prompt here...'):
         try:
@@ -63,23 +55,25 @@ def main():
             message_container.chat_message('user', avatar='👩🏾‍🦱').markdown(prompt)
 
             with message_container.chat_message('assistant', avatar='🤖'):
-                model = ChatOllama(model=selected_model)
-                
-                # Calling agent with base config generation prompt
-                bot = Agent(model=model, tools=[search_tool], system=config_generation_prompt, checkpointer=memory)
-                messages = [HumanMessage(content=prompt)]
-                thread = {"configurable": {"thread_id": "1"}}
+                message_placeholder = st.empty()
+                full_response = ''
+                with SqliteSaver.from_conn_string(":memory:") as memory:
+                    agent = RetrievalAgent(memory)
 
-                def generate_stream():
-                    full_response = ''
-                    for event in bot.workflow.stream({"messages": messages}, thread):
-                        for v in event.values():
-                            full_response += v['messages'][-1].content
-                            yield v['messages'][-1].content
-                    st.session_state.messages.append({'role': 'assistant', 'content': full_response})
-                
-                st.write_stream(generate_stream)
-                print(bot.workflow.get_state(config=thread))
+                    for token in stream_agent_response(
+                        agent,
+                        prompt,
+                        {"configurable": {"thread_id": "1"}},
+                    ):
+                        full_response += token
+                        message_placeholder.markdown(full_response + "▌")
+
+                    message_placeholder.markdown(full_response)
+
+            st.session_state.messages.append({
+                'role': 'assistant',
+                'content': full_response
+            })
                     
         except Exception as e:
             st.error(e, icon='❌')
