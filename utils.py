@@ -42,5 +42,8 @@ def create_retriever(split_docs: List[Document]) -> VectorStoreRetriever:
         documents=split_docs, 
         embedding=embeddings
     )
-    retriever = vectorstore.as_retriever()
+    retriever = vectorstore.as_retriever(
+        search_type="similarity_score_threshold",
+        search_kwargs={'score_threshold': 0.7}
+    ) # can be optimized with MMR to increase doc diversity once more files are included
     return retriever

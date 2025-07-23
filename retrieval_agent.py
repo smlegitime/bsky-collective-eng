@@ -23,9 +23,9 @@ def instantiate_retriever_tool():
     retriever = create_retriever(split_docs)
 
     retriever_tool = create_retriever_tool(
-        retriever,
-        'retrieve_source_code',
-        'Search and return information about the provided source code.'
+        retriever=retriever,
+        name='source_code_retriever',
+        description='Search and return relevant information based on the available source code.'
     )
     return retriever_tool
 
