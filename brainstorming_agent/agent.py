@@ -6,13 +6,16 @@ Description: This script defines the graph for the brainstorming agent.
 """
 from typing import TypedDict, Literal
 
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import tools_condition
+
 from brainstorming_agent.utils.nodes import (
     call_model,
     evaluate_documents, 
     rewrite_question,
     generate_answer,
+    give_feedback,
     tool_node
 )
 from brainstorming_agent.utils.state import AgentState
@@ -29,6 +32,7 @@ workflow.add_node('agent', call_model)
 workflow.add_node('retrieve', tool_node)
 workflow.add_node(rewrite_question)
 workflow.add_node(generate_answer)
+workflow.add_node(give_feedback)
 
 workflow.set_entry_point('agent')
 
@@ -47,8 +51,8 @@ workflow.add_conditional_edges(
     evaluate_documents # conditional node mapping happens within the function
 )
 
-workflow.add_edge('generate_answer', END)
+workflow.add_edge('generate_answer', 'give_feedback')
+workflow.add_edge('give_feedback', END)
 workflow.add_edge('rewrite_question', 'agent')
-
 
 graph = workflow.compile()

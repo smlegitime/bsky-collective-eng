@@ -10,9 +10,10 @@ from typing import Literal
 
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
-from brainstorming_agent.utils.tools import tools
 from langgraph.prebuilt import ToolNode
+from langgraph.types import interrupt, Command
 
+from brainstorming_agent.utils.tools import tools
 from brainstorming_agent.constants.prompt_templates import (
     EVAL_PROMPT, REWRITE_PROMPT, GENERATE_PROMPT
 )
@@ -74,6 +75,10 @@ def generate_answer(state):
     response = model.invoke([{'role': 'user', 'content': prompt}])
     return {'messages': [response]}
 
+# TODO: Convert to proposal approval node
+def give_feedback(state):
+    feedback = interrupt('Please share feedback:')
+    return {'messages': [feedback]}
 
 # Defines the function that has a termination condition dependent on tool call
 def should_continue(state):
