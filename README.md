@@ -1,7 +1,7 @@
 # Bluesky Labeler Collective Development Tool - Prototype
 
 Prototype agent for the [Collaborative Engineering](https://docs.google.com/document/d/1Wn-cG2htkIA1lBjoc7RARM74pEaU-kdpjEFT93J5174/edit?usp=sharing) project.
-![agent_graph](https://github.com/user-attachments/assets/3110b287-10ad-4bca-b99d-8ee7c665c827 | width=100)
+![agent_graph](https://github.com/user-attachments/assets/3110b287-10ad-4bca-b99d-8ee7c665c827)
 
 ## Overview
 
