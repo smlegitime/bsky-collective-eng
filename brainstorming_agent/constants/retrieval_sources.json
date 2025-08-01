@@ -1,0 +1,12 @@
+{
+    "bsky": [
+        "https://docs.bsky.app/docs/advanced-guides/atproto",
+        "https://docs.bsky.app/docs/advanced-guides/federation-architecture",
+        "https://docs.bsky.app/docs/advanced-guides/moderation"
+    ],
+    "skyware": [
+        "https://skyware.js.org/guides/labeler/introduction/getting-started/",
+        "https://skyware.js.org/guides/labeler/introduction/automated-labeling/",
+        "https://skyware.js.org/guides/labeler/glossary/"
+    ]
+}

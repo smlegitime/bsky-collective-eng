@@ -1,0 +1,11 @@
+langchain-community==0.3.18
+langchain-core==0.3.70
+langchain-ollama==0.2.2
+langchain-openai==0.3.7
+langchain-tavily==0.2.10
+langgraph==0.3.2
+langgraph-checkpoint==2.1.1
+langgraph-checkpoint-sqlite==2.0.5
+langgraph-prebuilt==0.5.2
+langgraph-sdk==0.1.53
+langsmith==0.4.8

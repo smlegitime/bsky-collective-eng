@@ -1,0 +1,7 @@
+{
+    "dependencies": ["./brainstorming_agent"],
+    "graphs": {
+        "agent": "./brainstorming_agent/agent.py:graph"
+    },
+    "env": ".env"
+}
