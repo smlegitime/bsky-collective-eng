@@ -13,8 +13,8 @@ The project contains logic for the [Bluesky Labeler](https://docs.bsky.app/docs/
 - Enable user approval or editing of the proposal
 - Generate a sample labeler TypeScript project based on the approved proposals
 
-[!TIP]
-Detailed [Requirements and Specifications](https://docs.google.com/document/d/1Wn-cG2htkIA1lBjoc7RARM74pEaU-kdpjEFT93J5174/edit?tab=t.bx70y9burmic#heading=h.hj1zhksgbbkb) are on a live Google doc.
+> [!TIP]
+> Detailed [Requirements and Specifications](https://docs.google.com/document/d/1Wn-cG2htkIA1lBjoc7RARM74pEaU-kdpjEFT93J5174/edit?tab=t.bx70y9burmic#heading=h.hj1zhksgbbkb) are on a live Google doc.
 
 ### Directory Structure
 The project is a [Langgraph Server](https://docs.langchain.com/langgraph-platform/langgraph-server) application and follows the required [application structure configuration](https://docs.langchain.com/langgraph-platform/setup-app-requirements-txt) for deployment.
@@ -41,13 +41,13 @@ The project is a [Langgraph Server](https://docs.langchain.com/langgraph-platfor
     ├── langgraph.json
     └── README.md
 ```
-[!IMPORTANT]
-The project needs a `.env` file with the `OPENAI_API_KEY` to use the GPT-4.1 model and `TAVILY_API_KEY` for the web search tool. Be sure to add that file after cloning this repo.
+> [!IMPORTANT]
+> The project needs a `.env` file with the `OPENAI_API_KEY` to use the GPT-4.1 model and `TAVILY_API_KEY` for the web search tool. Be sure to add that file after cloning this repo.
 
 ## Installation & Usage
 #### Using Langgraph Studio
-[!NOTE]
-You'll need to add the `LANGSMITH_API_KEY` to your `.env` file. You can [create a LangSmith account](https://smith.langchain.com/o/null/host/deployments) if needed. 
+>[!NOTE]
+> You'll need to add the `LANGSMITH_API_KEY` to your `.env` file. You can [create a LangSmith account](https://smith.langchain.com/o/null/host/deployments) if needed. 
 
 To install [Langgraph Studio](https://docs.langchain.com/langgraph-platform/langgraph-studio)
 
