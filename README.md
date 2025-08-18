@@ -58,19 +58,23 @@ Clone this repository
 
 Add the `.env` file in the root of the project
 
-Initialize a virtual environment
+Initialize and activate a virtual environment
 ```sh
 conda create -n my_virtual_env python=3.12
+conda activate my_virtual_env
 ```
 
-Install dependencies
+Install dependencies (from the root of the project folder)
 ```sh
-pip install -U "langgraph-cli[inmem]"
+pip install -r requirements.txt
 ```
 and run
 ```sh
 langgraph dev
 ```
+>[!NOTE]
+> You'll need to run `langgraph dev --tunnel` if you are running on browsers that block `http` connections by default (e.g., Safari, Brave Browser). 
+
 ## More Resources
 - [Multi-agent systems](https://langchain-ai.github.io/langgraph/concepts/multi_agent/)
 - [Langchain tools](https://python.langchain.com/docs/integrations/tools/). The protoype uses the Tavily Web Search tool
