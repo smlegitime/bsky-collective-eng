@@ -1,7 +1,7 @@
 {
-    "dependencies": ["./brainstorming_agent"],
+    "dependencies": ["."],
     "graphs": {
-        "agent": "./brainstorming_agent/agent.py:graph"
+        "agent": "./src/feedback_agent.py:feedback_agent"
     },
     "env": ".env"
 }
